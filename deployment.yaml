@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: api-banking-statistics
+  name: api-banking-statistics
+  namespace: api-banking-temp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: api-banking-statistics
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: api-banking-statistics
+        track: stable
+      name: api-banking-statistics
+    spec:
+      containers:
+        - image: >-
+            artifactory.global.standardchartered.com/cib-channels/api-banking-statistics:latest
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 10
+          name: api-banking-statistics-service
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 8080
+              scheme: HTTP
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 15
+          resources:
+            limits:
+              cpu: 400m
+              memory: 512Mi
+        - image: 'artifactory.global.standardchartered.com/cib-dcda/nginx-ubi-8080:0.0.1'
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 8443
+              scheme: HTTPS
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 10
+          name: tls-sidecar
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /
+              port: 8443
+              scheme: HTTPS
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 15
+          volumeMounts:
+            - mountPath: /app/cert
+              name: secret-volume
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      volumes:
+        - name: secret-volume
+          secret:
+            defaultMode: 420
+            items:
+              - key: ocp.crt
+                path: ocp.crt
+              - key: ocp.key
+                path: ocp.key
+            secretName: api-banking-statistics-nginx-secret-ocp
