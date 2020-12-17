@@ -1,0 +1,46 @@
+FROM artifactory.global.standardchartered.com/openjdk:8-jdk-alpine
+
+ENV HTTP_PROXY=http://10.192.126.40:8080/
+ENV HTTPS_PROXY=http://10.192.126.40:8080/
+
+COPY zoneinfo.zip /usr/share/
+RUN cd /usr/share/ && unzip zoneinfo.zip && rm -f zoneinfo.zip
+ENV TZ=Asia/Hong_Kong
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN unset TZ
+
+RUN chown -R 1000:1000 /opt/ /usr/bin/kafkacat
+RUN chmod -R 755  /opt/ /usr/bin/kafkacat
+
+USER 1000:1000
+----------------------
+FROM artifactory.global.standardchartered.com/bash
+
+RUN mkdir /apps
+WORKDIR /apps
+ENV HTTP_PROXY=http://10.192.126.40:8080/
+ENV HTTPS_PROXY=http://10.192.126.40:8080/
+
+COPY zoneinfo.zip /usr/share/
+RUN cd /usr/share/ && unzip zoneinfo.zip && rm -f zoneinfo.zip
+ENV TZ=Asia/Hong_Kong
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN unset TZ
+
+RUN wget -q --proxy off http://packages.confluent.io/archive/6.0/confluent-6.0.0.tar.gz
+RUN tar xvf confluent-6.0.0.tar.gz && rm -rf confluent-6.0.0.tar.gz
+COPY config /apps/confluent-6.0.0/
+RUN chown -R 1000:1000 /apps/
+RUN chmod -R 755  /apps
+
+USER 1000:1000
+
+
+
+
+
+kubectl get pods -n infra -o jsonpath="{.items[*].spec.containers[*].image}"
+
+
+
+kubectl get pods -n infra -o jsonpath="{..image}" | tr -s '[[:space:]]' '\n' |sort |uniq -c
