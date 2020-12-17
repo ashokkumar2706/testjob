@@ -1,0 +1,3 @@
+>helm install operator ./confluent-operator -f ./providers/private.yaml  --namespace application --set operator.enabled=true
+File association not found for extension .py
+Error: rendered manifests contain a resource that already exists. Unable to continue with install: could not get information about the resource: clusterroles.rbac.authorization.k8s.io "cc-operator" is forbidden: User "application-deploy" cannot get resource "clusterroles" in API group "rbac.authorization.k8s.io" at the cluster scope
