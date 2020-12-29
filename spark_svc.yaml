@@ -1,0 +1,66 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    meta.helm.sh/release-name: my-release
+    meta.helm.sh/release-namespace: spark
+  creationTimestamp: "2020-12-29T15:04:50Z"
+  labels:
+    app.kubernetes.io/instance: my-release
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: spark
+    helm.sh/chart: spark-4.4.0
+  name: my-release-spark-master-svc
+  namespace: spark
+  resourceVersion: "24015148"
+  selfLink: /api/v1/namespaces/spark/services/my-release-spark-master-svc
+  uid: eec7613c-456a-4c15-a10b-d1fa8c238a23
+spec:
+  clusterIP: 10.105.32.188
+  externalTrafficPolicy: Cluster
+  ports:
+  - name: cluster
+    nodePort: 31721
+    port: 7077
+    protocol: TCP
+    targetPort: cluster
+  - name: http
+    nodePort: 31483
+    port: 80
+    protocol: TCP
+    targetPort: http
+  selector:
+    app.kubernetes.io/component: master
+    app.kubernetes.io/instance: my-release
+    app.kubernetes.io/name: spark
+  sessionAffinity: None
+  type: NodePort
+status:
+  loadBalancer: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    meta.helm.sh/release-name: my-release
+    meta.helm.sh/release-namespace: spark
+  creationTimestamp: "2020-12-29T15:04:50Z"
+  labels:
+    app.kubernetes.io/instance: my-release
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: spark
+    helm.sh/chart: spark-4.4.0
+  name: my-release-spark-headless
+  namespace: spark
+  resourceVersion: "24014839"
+  selfLink: /api/v1/namespaces/spark/services/my-release-spark-headless
+  uid: 2c8543bc-1982-46ab-a0d3-76b3ed7e6a10
+spec:
+  clusterIP: None
+  selector:
+    app.kubernetes.io/instance: my-release
+    app.kubernetes.io/name: spark
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
