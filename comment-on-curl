@@ -1,0 +1,11 @@
+Findings:
+
+https://stackoverflow.com/questions/603170/gui-frontend-for-curl-for-testing-an-api
+
+Docker images with cli curl testing:
+https://github.com/DannyDainton/postman-docker
+https://github.com/fullstorydev/grpcurl
+https://hub.docker.com/r/clue/httpie
+
+UI for curl test
+https://curlbuilder.com/
