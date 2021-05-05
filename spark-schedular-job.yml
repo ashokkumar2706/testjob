@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
           - name: hollow-curl
-            image: artifactory.global.standardchartered.com/theithollow/hollowapp-blog:curl
+            image: theithollow/hollowapp-blog:curl
             args:
             - /bin/sh
             - -c
