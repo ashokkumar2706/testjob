@@ -7,3 +7,12 @@
        register: processlist
      - debug:
          msg: "{{ processlist.stdout_lines }}"
+
+
+---
+
+shell: "systemctl status nginx | grep -i inactive |awk '{print $2}'"
+register: result
+until: result.stdout_lines == "inactive"
+retries: 3
+delay: 30
