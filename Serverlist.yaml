@@ -16,3 +16,18 @@ register: result
 until: result.stdout_lines == "inactive"
 retries: 3
 delay: 30
+
+
+process:
+process1:
+-
+alert_through: local/siren
+ip: "170.0.0.0"
+process_name: "python analyser"
+restart_script: sample.sh
+process2:
+-
+alert_through: local/siren
+ip: "170.0.0.0"
+process_name: "python analyser"
+restart_script: sample.sh
